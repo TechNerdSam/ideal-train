@@ -73,11 +73,11 @@
                 <h2 class="text-5xl md:text-7xl font-black text-white leading-tight mb-4">
                     Découvrez votre héritage ancestral.<br>
                     <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-blue-500">
-                        Instantanément, depuis chez vous.
+                        Instantanément, avec une précision inégalée.
                     </span>
                 </h2>
                 <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto mb-8">
-                    Notre technologie de spectroscopie photonique, validée scientifiquement, analyse votre signature faciale pour révéler votre histoire génétique avec une précision certifiée.
+                    Notre technologie de spectroscopie photonique, validée scientifiquement, analyse votre signature faciale pour révéler votre histoire génétique avec un niveau de détail exhaustif.
                 </p>
                 <a href="#scanner" class="btn-primary text-white font-bold text-lg px-10 py-4 rounded-full inline-block">
                     Lancer mon analyse
@@ -95,11 +95,11 @@
                     <div class="glass-effect p-8 rounded-2xl">
                         <div class="flex items-center mb-4">
                             <div class="bg-sky-500/10 text-sky-400 p-3 rounded-lg mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2-2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                             </div>
-                            <h4 class="text-xl font-bold text-white">1. Scan Biométrique</h4>
+                            <h4 class="text-xl font-bold text-white">1. Capture d'image</h4>
                         </div>
-                        <p class="text-slate-300">Positionnez votre visage face à la webcam. Notre système effectue un scan sécurisé pour capturer les données nécessaires à l'analyse.</p>
+                        <p class="text-slate-300">Utilisez votre webcam ou importez une photo. Notre système effectue une capture sécurisée des données nécessaires à l'analyse.</p>
                     </div>
                     <!-- Step 2 -->
                     <div class="glass-effect p-8 rounded-2xl">
@@ -117,9 +117,9 @@
                             <div class="bg-sky-500/10 text-sky-400 p-3 rounded-lg mr-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                             </div>
-                            <h4 class="text-xl font-bold text-white">3. Rapport Certifié</h4>
+                            <h4 class="text-xl font-bold text-white">3. Rapport Exhaustif</h4>
                         </div>
-                        <p class="text-slate-300">Accédez à votre rapport d'ascendance complet, incluant une carte de migration, des pourcentages régionaux et des informations sur vos haplogroupes.</p>
+                        <p class="text-slate-300">Accédez à votre rapport d'ascendance détaillé, avec des pourcentages précis, une carte de migration et des informations sur vos haplogroupes.</p>
                     </div>
                 </div>
             </div>
@@ -131,10 +131,18 @@
                 <h3 class="text-4xl font-bold text-white mb-12">Commencez votre voyage dans le temps.</h3>
                 
                 <div id="scanner-container" class="max-w-2xl mx-auto glass-effect rounded-2xl p-8">
-                    <!-- Step 1: Start Camera -->
+                    <!-- Step 1: Choose method -->
                     <div id="step-start">
-                        <p class="text-slate-300 mb-6">Cliquez ci-dessous pour autoriser un accès sécurisé à votre webcam et initier le scan.</p>
-                        <button id="start-camera-btn" class="btn-primary text-white font-bold px-8 py-3 rounded-full">Activer la webcam</button>
+                        <p class="text-slate-300 mb-6">Choisissez comment fournir votre image pour l'analyse.</p>
+                        <div class="flex flex-col sm:flex-row justify-center gap-4">
+                           <button id="start-camera-btn" class="btn-primary text-white font-bold px-8 py-3 rounded-full flex-1">
+                                Activer la webcam
+                            </button>
+                            <button id="upload-btn" class="bg-slate-600 text-white font-bold px-8 py-3 rounded-full hover:bg-slate-700 transition flex-1">
+                                Importer une photo
+                            </button>
+                            <input type="file" id="file-input" class="hidden" accept="image/png, image/jpeg">
+                        </div>
                         <p id="camera-error" class="text-red-400 mt-4 hidden"></p>
                     </div>
 
@@ -149,7 +157,7 @@
 
                     <!-- Step 3: Confirm and Analyze -->
                     <div id="step-analyze" class="hidden">
-                        <p class="text-slate-300 mb-6">Scan biométrique terminé. Prêt à lancer le calcul ?</p>
+                        <p class="text-slate-300 mb-6">Image capturée. Prêt à lancer le calcul ?</p>
                         <canvas id="photo-canvas" class="w-full aspect-video rounded-lg mb-6"></canvas>
                         <div class="flex justify-center gap-4">
                              <button id="retake-btn" class="bg-slate-600 text-white font-bold px-8 py-3 rounded-full hover:bg-slate-700 transition">Recommencer</button>
@@ -171,18 +179,18 @@
         <section id="results" class="hidden py-20 bg-slate-900/50">
             <div class="container mx-auto px-6 text-center">
                 <h3 class="text-4xl font-bold text-white mb-2">Votre Rapport d'Origines Ancestrales</h3>
-                <p class="text-slate-400 mb-12">Voici la composition de votre signature génétique.</p>
-                <div class="max-w-5xl mx-auto glass-effect rounded-2xl p-8 flex flex-col lg:flex-row items-center gap-8">
+                <p class="text-slate-400 mb-12">Voici la composition détaillée de votre signature génétique.</p>
+                <div class="max-w-5xl mx-auto glass-effect rounded-2xl p-8 flex flex-col lg:flex-row items-start gap-8">
                     <!-- Map -->
                     <div class="w-full lg:w-1/2">
                        <svg id="world-map" viewBox="0 0 1000 500" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
                             <!-- Simplified world map paths. Each continent/region has an ID -->
                              <path id="region-na" fill="#334155" d="M165 59 L132 60 L123 66 L118 78 L85 83 L50 102 L20 125 L21 155 L42 165 L60 162 L87 180 L107 200 L125 210 L150 215 L170 212 L195 220 L220 230 L250 220 L255 200 L260 170 L280 140 L285 110 L260 80 L230 60 L190 55 Z"></path>
-                            <path id="region-sa" fill="#334155" d="M225 240 L200 250 L190 280 L195 320 L210 350 L240 370 L260 360 L270 330 L280 300 L260 260 L240 245 Z"></path>
-                            <path id="region-af" fill="#334155" d="M420 220 L400 240 L390 280 L410 330 L440 350 L470 330 L480 280 L460 240 L440 225 Z"></path>
-                            <path id="region-eu" fill="#334155" d="M400 120 L420 110 L450 115 L480 130 L470 160 L440 180 L410 170 L390 150 L395 130 Z"></path>
-                            <path id="region-as" fill="#334155" d="M500 80 L550 70 L650 80 L750 120 L800 180 L750 250 L680 280 L600 270 L550 220 L510 150 Z"></path>
-                            <path id="region-oc" fill="#334155" d="M800 350 L850 360 L870 390 L840 410 L810 400 L790 370 Z"></path>
+                             <path id="region-sa" fill="#334155" d="M225 240 L200 250 L190 280 L195 320 L210 350 L240 370 L260 360 L270 330 L280 300 L260 260 L240 245 Z"></path>
+                             <path id="region-af" fill="#334155" d="M420 220 L400 240 L390 280 L410 330 L440 350 L470 330 L480 280 L460 240 L440 225 Z"></path>
+                             <path id="region-eu" fill="#334155" d="M400 120 L420 110 L450 115 L480 130 L470 160 L440 180 L410 170 L390 150 L395 130 Z"></path>
+                             <path id="region-as" fill="#334155" d="M500 80 L550 70 L650 80 L750 120 L800 180 L750 250 L680 280 L600 270 L550 220 L510 150 Z"></path>
+                             <path id="region-oc" fill="#334155" d="M800 350 L850 360 L870 390 L840 410 L810 400 L790 370 Z"></path>
                         </svg>
                     </div>
                     <!-- Percentages -->
@@ -216,7 +224,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </summary>
                         <p class="mt-4 text-slate-300">
-                            Votre vie privée est notre priorité absolue. L'image capturée est convertie en un vecteur de données biométriques chiffré (SHA-256) directement sur votre appareil. Ce vecteur est envoyé à nos serveurs pour analyse et est immédiatement et définitivement détruit après la génération de votre rapport. Nous ne stockons jamais votre photo.
+                           Votre vie privée est notre priorité absolue. L'image capturée est convertie en un vecteur de données biométriques chiffré (SHA-256) directement sur votre appareil. Ce vecteur est envoyé à nos serveurs pour analyse et est immédiatement et définitivement détruit après la génération de votre rapport. Nous ne stockons jamais votre photo.
                         </p>
                     </details>
                      <!-- FAQ Item 3 -->
@@ -245,6 +253,8 @@
     <script>
         // DOM Elements
         const startBtn = document.getElementById('start-camera-btn');
+        const uploadBtn = document.getElementById('upload-btn');
+        const fileInput = document.getElementById('file-input');
         const captureBtn = document.getElementById('capture-btn');
         const retakeBtn = document.getElementById('retake-btn');
         const analyzeBtn = document.getElementById('analyze-btn');
@@ -266,8 +276,9 @@
         const loadingText = document.getElementById('loading-text');
 
         let stream;
+        let currentCaptureMode = 'webcam'; // 'webcam' or 'upload'
 
-        // --- Camera Logic ---
+        // --- Camera & Upload Logic ---
         async function startCamera() {
             try {
                 if (stream) {
@@ -278,10 +289,31 @@
                 stepStart.classList.add('hidden');
                 stepCapture.classList.remove('hidden');
                 cameraError.classList.add('hidden');
+                currentCaptureMode = 'webcam';
             } catch (err) {
                 console.error("Error accessing webcam: ", err);
                 cameraError.textContent = "Impossible d'accéder à la webcam. Veuillez vérifier les autorisations de votre navigateur.";
                 cameraError.classList.remove('hidden');
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        context.drawImage(img, 0, 0);
+                        stepStart.classList.add('hidden');
+                        stepAnalyze.classList.remove('hidden');
+                        currentCaptureMode = 'upload';
+                    }
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
             }
         }
 
@@ -298,7 +330,11 @@
 
         function retakePhoto() {
             stepAnalyze.classList.add('hidden');
-            startCamera();
+            if (currentCaptureMode === 'webcam') {
+                startCamera();
+            } else {
+                stepStart.classList.remove('hidden');
+            }
         }
 
         // --- Analysis Logic ---
@@ -311,11 +347,14 @@
             const loadingMessages = [
                 "Analyse de la signature photonique...",
                 "Décodage de la séquence bio-digitale...",
-                "Comparaison avec notre base de données génomique...",
-                "Triangulation des origines ancestrales...",
-                "Génération de votre rapport certifié..."
+                "Comparaison croisée avec 2.5 millions de profils génomiques...",
+                "Triangulation des haplogroupes maternels et paternels...",
+                "Calcul des correspondances régionales fines...",
+                "Génération de votre rapport certifié et exhaustif..."
             ];
             let messageIndex = 0;
+            loadingText.textContent = loadingMessages[0];
+
 
             const interval = setInterval(() => {
                 messageIndex++;
@@ -334,51 +373,62 @@
             }, loadingMessages.length * 1500);
         }
 
-        // --- Results Logic (Randomized for demonstration) ---
+        // --- Results Logic (Exhaustive & Randomized) ---
         const ancestryData = {
-            'Europe du Nord & Ouest': { percentage: 0, color: '#38bdf8', region: 'eu' },
-            'Afrique Subsaharienne': { percentage: 0, color: '#facc15', region: 'af' },
-            'Asie de l\'Est & du Sud-Est': { percentage: 0, color: '#f87171', region: 'as' },
-            'Amériques autochtones': { percentage: 0, color: '#4ade80', region: 'na' },
-            'Amérique du Sud': { percentage: 0, color: '#a78bfa', region: 'sa' },
-            'Océanie': { percentage: 0, color: '#2dd4bf', region: 'oc' }
+            'Scandinavie (Norvège, Suède, Danemark)': { color: '#60a5fa', region: 'eu' },
+            'Îles Britanniques (Angleterre, Écosse, Irlande)': { color: '#38bdf8', region: 'eu' },
+            'Europe de l\'Ouest (France, Allemagne, Benelux)': { color: '#0ea5e9', region: 'eu' },
+            'Péninsule Ibérique (Espagne, Portugal)': { color: '#2563eb', region: 'eu' },
+            'Péninsule Italienne & Grèce': { color: '#1d4ed8', region: 'eu' },
+            'Europe de l\'Est & Russie': { color: '#93c5fd', region: 'eu' },
+            'Pays Baltes': { color: '#dbeafe', region: 'eu' },
+            'Afrique de l\'Ouest (Nigéria, Ghana, Sénégal)': { color: '#facc15', region: 'af' },
+            'Afrique de l\'Est (Éthiopie, Kenya, Somalie)': { color: '#eab308', region: 'af' },
+            'Afrique Centrale (Congo, Cameroun)': { color: '#ca8a04', region: 'af' },
+            'Afrique du Nord (Maroc, Égypte, Algérie)': { color: '#fde047', region: 'af' },
+            'Afrique Australe (Afrique du Sud, Namibie)': { color: '#a16207', region: 'af' },
+            'Asie de l\'Est (Chine, Mongolie)': { color: '#f87171', region: 'as' },
+            'Japon & Corée': { color: '#ef4444', region: 'as' },
+            'Asie du Sud-Est (Vietnam, Thaïlande, Philippines)': { color: '#dc2626', region: 'as' },
+            'Asie du Sud (Inde, Pakistan, Bangladesh)': { color: '#b91c1c', region: 'as' },
+            'Asie Centrale (Kazakhstan, Ouzbékistan)': { color: '#fca5a5', region: 'as' },
+            'Sibérie': { color: '#fee2e2', region: 'as' },
+            'Moyen-Orient (Péninsule Arabique, Levant)': { color: '#c2410c', region: 'as' },
+            'Anatolie & Caucase (Turquie, Arménie)': { color: '#ea580c', region: 'as' },
+            'Amérindien – Amérique du Nord': { color: '#4ade80', region: 'na' },
+            'Amérindien – Andes (Pérou, Bolivie)': { color: '#22c55e', region: 'sa' },
+            'Amérindien – Amazonie & Caraïbes': { color: '#16a34a', region: 'sa' },
+            'Océanie (Aborigène Australien, Mélanésien)': { color: '#14b8a6', region: 'oc' },
+            'Polynésie & Micronésie': { color: '#0d9488', region: 'oc' },
         };
 
         function generateRandomPercentages() {
-            let total = 100;
-            let results = {};
             const keys = Object.keys(ancestryData);
-            
-            // Assign random values
-            keys.forEach((key, index) => {
-                if (index === keys.length - 1) {
-                    results[key] = total;
-                } else {
-                    const randomVal = Math.floor(Math.random() * (total / 2));
-                    results[key] = randomVal;
-                    total -= randomVal;
-                }
+            let rawValues = {};
+            let totalRawValue = 0;
+
+            // 1. Generate a random base value for every single origin
+            keys.forEach(key => {
+                const randomValue = Math.random();
+                rawValues[key] = randomValue;
+                totalRawValue += randomValue;
             });
 
-            // Shuffle and reassign to avoid bias
-            const shuffledKeys = keys.sort(() => 0.5 - Math.random());
-            const finalResults = {};
-            shuffledKeys.forEach(key => {
-                const value = results[shuffledKeys.find(k => results[k] !== undefined)];
-                finalResults[key] = value;
-                delete results[shuffledKeys.find(k => results[k] !== undefined)];
+            // 2. Normalize all values so their sum is exactly 100
+            let totalPercentage = 0;
+            keys.forEach((key, index) => {
+                const percentage = (rawValues[key] / totalRawValue) * 100;
+                
+                // On the last element, assign the remainder to prevent floating point inaccuracies
+                if (index === keys.length - 1) {
+                    ancestryData[key].percentage = 100 - totalPercentage;
+                } else {
+                    ancestryData[key].percentage = percentage;
+                    totalPercentage += percentage;
+                }
             });
-            
-            let sum = 0;
-            for(let key in finalResults){
-                ancestryData[key].percentage = finalResults[key];
-                sum += finalResults[key];
-            }
-            // In case of rounding issues, adjust last element
-            if (sum !== 100) {
-                 ancestryData[shuffledKeys[0]].percentage += (100 - sum);
-            }
         }
+
 
         function displayResults() {
             generateRandomPercentages();
@@ -387,43 +437,34 @@
             // Sort by percentage descending
             const sortedAncestry = Object.entries(ancestryData).sort(([,a],[,b]) => b.percentage - a.percentage);
             
-            let maxPercentage = 0;
-            let dominantRegionId = '';
+            // Reset map colors
+            worldMap.querySelectorAll('path').forEach(path => {
+                path.style.fill = '#334155'; // Reset color
+            });
 
             sortedAncestry.forEach(([name, data]) => {
                 if(data.percentage > 0) {
-                    if(data.percentage > maxPercentage){
-                        maxPercentage = data.percentage;
-                        dominantRegionId = data.region;
-                    }
                     const resultEl = document.createElement('div');
                     resultEl.className = 'mb-4';
                     resultEl.innerHTML = `
                         <div class="flex justify-between items-center mb-1">
                             <span class="font-semibold text-white">${name}</span>
-                            <span class="text-sky-400 font-bold">${data.percentage}%</span>
+                            <span class="text-sky-400 font-bold">${data.percentage.toFixed(2)}%</span>
                         </div>
                         <div class="w-full bg-slate-700 rounded-full h-2.5">
                             <div class="h-2.5 rounded-full" style="width: ${data.percentage}%; background-color: ${data.color};"></div>
                         </div>
                     `;
                     resultsList.appendChild(resultEl);
-                }
-            });
 
-            // Reset map colors
-            worldMap.querySelectorAll('path').forEach(path => {
-                path.style.fill = '#334155'; // Reset color
-            });
-            
-            // Highlight dominant regions on map
-            sortedAncestry.forEach(([name, data]) => {
-                 if(data.percentage > 10){
-                     const regionPath = worldMap.querySelector(`#region-${data.region}`);
-                     if (regionPath) {
-                         regionPath.style.fill = data.color;
-                     }
-                 }
+                    // Highlight map regions with significant percentage
+                    if (data.percentage > 5) {
+                        const regionPath = worldMap.querySelector(`#region-${data.region}`);
+                        if (regionPath) {
+                            regionPath.style.fill = data.color;
+                        }
+                    }
+                }
             });
 
             resultsSection.classList.remove('hidden');
@@ -433,13 +474,16 @@
         function resetExperience() {
             resultsSection.classList.add('hidden');
             stepAnalyze.classList.add('hidden');
+            stepCapture.classList.add('hidden');
             stepStart.classList.remove('hidden');
             scanner.scrollIntoView({ behavior: 'smooth' });
+            fileInput.value = ''; // Reset file input
         }
-
 
         // Event Listeners
         startBtn.addEventListener('click', startCamera);
+        uploadBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileUpload);
         captureBtn.addEventListener('click', capturePhoto);
         retakeBtn.addEventListener('click', retakePhoto);
         analyzeBtn.addEventListener('click', analyze);
