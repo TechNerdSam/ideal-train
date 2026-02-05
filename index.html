@@ -2,493 +2,635 @@
 <html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenoScan - Analyse d'Origines par Photonique</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GenoScan | Architecture de l'Origine</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    colors: {
+                        'neon-blue': '#00f3ff',
+                        'deep-space': '#050510',
+                        'glass': 'rgba(255, 255, 255, 0.05)',
+                    },
+                    animation: {
+                        'scan-line': 'scan 2.5s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        scan: {
+                            '0%': { top: '0%', opacity: '0' },
+                            '10%': { opacity: '1' },
+                            '90%': { opacity: '1' },
+                            '100%': { top: '100%', opacity: '0' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0a0a1a;
-            color: #e0e0e0;
+            background-color: #02020a;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 25%);
         }
-        .hero-bg {
-            background-image: radial-gradient(circle at top right, rgba(29, 78, 216, 0.3) 0%, transparent 40%),
-                              radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.2) 0%, transparent 50%);
+
+        /* Scrollbar Customization */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .glass-effect {
-            background: rgba(17, 24, 39, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        ::-webkit-scrollbar-track {
+            background: #02020a;
         }
-        .btn-primary {
-            background: linear-gradient(90deg, #0ea5e9, #2563eb);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
         }
-        .btn-primary:hover {
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-panel-hover:hover {
+            background: rgba(30, 41, 59, 0.5);
+            border-color: rgba(56, 189, 248, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .loader {
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-left-color: #0ea5e9;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
+
+        /* Neon Glow Text */
+        .text-glow {
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        /* Scan Line Effect */
+        .scan-overlay {
+            background: linear-gradient(to bottom, transparent, rgba(14, 165, 233, 0.5), transparent);
+            height: 4px;
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.8);
         }
+
+        /* HUD Corners */
+        .hud-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: rgba(14, 165, 233, 0.6);
+            border-style: solid;
+            transition: all 0.3s ease;
+        }
+        .hud-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+        .hud-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+        .hud-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+        .hud-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+        .scan-container:hover .hud-corner {
+            width: 30px;
+            height: 30px;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.4);
+        }
+
+        /* Interactive Map Paths */
         #world-map path {
-            transition: fill 0.5s ease-in-out;
+            transition: fill 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.6s ease;
+            cursor: pointer;
+            fill: #1e293b;
+            stroke: rgba(255,255,255,0.05);
+            stroke-width: 0.5;
+        }
+        #world-map path:hover {
+            fill: #334155;
+        }
+
+        /* Loader */
+        .tech-loader {
+            width: 60px;
+            height: 60px;
+            border: 3px solid transparent;
+            border-top-color: #0ea5e9;
+            border-right-color: #0ea5e9;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .tech-loader::before {
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 3px solid transparent;
+            border-top-color: #8b5cf6;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite reverse;
+        }
+        @keyframes spin { 0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);} }
+
+        /* Utilities */
+        .hidden-accessible {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased selection:bg-sky-500 selection:text-white">
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 glass-effect">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-white">
-                <span class="text-sky-400">Geno</span>Scan
-            </h1>
-            <nav class="hidden md:flex space-x-8 text-sm items-center">
-                <a href="#how-it-works" class="hover:text-sky-400 transition-colors">La Technologie</a>
-                <a href="#scanner" class="hover:text-sky-400 transition-colors">Démarrer l'analyse</a>
-                <a href="#faq" class="hover:text-sky-400 transition-colors">FAQ</a>
-            </nav>
-            <a href="#scanner" class="hidden md:block bg-sky-500 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-sky-600 transition-colors">Analyser mes origines</a>
-        </div>
-    </header>
-
-    <main>
-        <!-- Hero Section -->
-        <section class="min-h-screen flex items-center justify-center text-center hero-bg pt-20">
-            <div class="container mx-auto px-6">
-                <h2 class="text-5xl md:text-7xl font-black text-white leading-tight mb-4">
-                    Découvrez votre héritage ancestral.<br>
-                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-blue-500">
-                        Instantanément, avec une précision inégalée.
-                    </span>
-                </h2>
-                <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto mb-8">
-                    Notre technologie de spectroscopie photonique, validée scientifiquement, analyse votre signature faciale pour révéler votre histoire génétique avec un niveau de détail exhaustif.
-                </p>
-                <a href="#scanner" class="btn-primary text-white font-bold text-lg px-10 py-4 rounded-full inline-block">
-                    Lancer mon analyse
-                </a>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md border-b border-white/5 bg-deep-space/70">
+        <div class="container mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                    <i class="fa-solid fa-dna text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">GENO<span class="text-sky-400">SCAN</span></span>
             </div>
-        </section>
+            
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+                <a href="#technology" class="hover:text-white transition-colors">Technologie</a>
+                <a href="#process" class="hover:text-white transition-colors">Processus</a>
+                <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+            </div>
 
-        <!-- How It Works Section -->
-        <section id="how-it-works" class="py-20 bg-slate-900/50">
-            <div class="container mx-auto px-6 text-center">
-                <h3 class="text-4xl font-bold text-white mb-2">Une science de pointe, une simplicité révolutionnaire.</h3>
-                <p class="text-slate-400 mb-12">Votre rapport d'ascendance complet en trois étapes.</p>
-                <div class="grid md:grid-cols-3 gap-8 text-left">
-                    <!-- Step 1 -->
-                    <div class="glass-effect p-8 rounded-2xl">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-sky-500/10 text-sky-400 p-3 rounded-lg mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2-2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                            </div>
-                            <h4 class="text-xl font-bold text-white">1. Capture d'image</h4>
-                        </div>
-                        <p class="text-slate-300">Utilisez votre webcam ou importez une photo. Notre système effectue une capture sécurisée des données nécessaires à l'analyse.</p>
-                    </div>
-                    <!-- Step 2 -->
-                    <div class="glass-effect p-8 rounded-2xl">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-sky-500/10 text-sky-400 p-3 rounded-lg mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V3m0 18v-3m6-6h3m-3 6h3M6 9a2 2 0 012-2h8a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V9z" /></svg>
-                            </div>
-                            <h4 class="text-xl font-bold text-white">2. Analyse GenoAI™</h4>
-                        </div>
-                        <p class="text-slate-300">Notre IA effectue une spectroscopie de réflectance cutanée, corrélant vos biomarqueurs phénotypiques à notre base de données de 2.5 millions de profils génomiques.</p>
-                    </div>
-                    <!-- Step 3 -->
-                    <div class="glass-effect p-8 rounded-2xl">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-sky-500/10 text-sky-400 p-3 rounded-lg mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                            </div>
-                            <h4 class="text-xl font-bold text-white">3. Rapport Exhaustif</h4>
-                        </div>
-                        <p class="text-slate-300">Accédez à votre rapport d'ascendance détaillé, avec des pourcentages précis, une carte de migration et des informations sur vos haplogroupes.</p>
-                    </div>
+            <a href="#scanner" class="hidden md:flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 px-5 py-2 rounded-full text-sm font-semibold transition-all group">
+                <span>Lancer le module</span>
+                <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="relative pt-32 pb-20">
+        
+        <!-- Hero Section -->
+        <section class="container mx-auto px-6 mb-32 relative">
+            <!-- Decorative Elements -->
+            <div class="absolute -top-20 -left-20 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="absolute top-40 right-0 w-72 h-72 bg-purple-600/10 rounded-full blur-[80px] pointer-events-none"></div>
+
+            <div class="text-center max-w-4xl mx-auto animate-fade-in">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono mb-8">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+                    </span>
+                    SYSTÈME V2.5 ONLINE
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-black text-white leading-tight tracking-tight mb-6">
+                    L'ADN du futur est <br>
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-blue-500 to-purple-600 text-glow">déjà en vous.</span>
+                </h1>
+                
+                <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                    Une interface de bio-analyse quantique qui révèle vos origines géographiques par spectroscopie faciale. Précision algorithmique déterministe. Design immersif.
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#scanner" class="group relative px-8 py-4 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg transition-all shadow-lg shadow-sky-600/25 overflow-hidden">
+                        <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                        <span class="relative flex items-center gap-2">
+                            <i class="fa-solid fa-fingerprint"></i> Analyser mes origines
+                        </span>
+                    </a>
+                    <a href="#technology" class="px-8 py-4 bg-slate-800/50 hover:bg-slate-800 text-slate-300 hover:text-white font-medium rounded-lg transition-all border border-white/10 backdrop-blur-sm">
+                        Comprendre la tech
+                    </a>
                 </div>
             </div>
         </section>
 
-        <!-- Scanner Section -->
-        <section id="scanner" class="py-20">
-            <div class="container mx-auto px-6 text-center">
-                <h3 class="text-4xl font-bold text-white mb-12">Commencez votre voyage dans le temps.</h3>
-                
-                <div id="scanner-container" class="max-w-2xl mx-auto glass-effect rounded-2xl p-8">
-                    <!-- Step 1: Choose method -->
-                    <div id="step-start">
-                        <p class="text-slate-300 mb-6">Choisissez comment fournir votre image pour l'analyse.</p>
-                        <div class="flex flex-col sm:flex-row justify-center gap-4">
-                           <button id="start-camera-btn" class="btn-primary text-white font-bold px-8 py-3 rounded-full flex-1">
-                                Activer la webcam
-                            </button>
-                            <button id="upload-btn" class="bg-slate-600 text-white font-bold px-8 py-3 rounded-full hover:bg-slate-700 transition flex-1">
-                                Importer une photo
-                            </button>
-                            <input type="file" id="file-input" class="hidden" accept="image/png, image/jpeg">
-                        </div>
-                        <p id="camera-error" class="text-red-400 mt-4 hidden"></p>
+        <!-- Scanner Interface (The Core) -->
+        <section id="scanner" class="container mx-auto px-6 mb-32 scroll-mt-28">
+            <div class="max-w-5xl mx-auto">
+                <!-- Interface Header -->
+                <div class="flex justify-between items-end mb-6 font-mono text-xs text-slate-500">
+                    <div>
+                        <p>ID SESSION: <span class="text-sky-400" id="session-id">LOADING...</span></p>
+                        <p>SECURE CONNECTION: <span class="text-green-400">ENCRYPTED</span></p>
                     </div>
-
-                    <!-- Step 2: Capture Photo -->
-                    <div id="step-capture" class="hidden">
-                        <div class="relative w-full aspect-video bg-black rounded-lg mb-6 overflow-hidden">
-                            <video id="webcam-feed" class="w-full h-full object-cover" autoplay playsinline></video>
-                            <div class="absolute inset-0 border-4 border-sky-500/50 rounded-lg pointer-events-none"></div>
-                        </div>
-                        <button id="capture-btn" class="btn-primary text-white font-bold px-8 py-3 rounded-full">Scanner mon visage</button>
+                    <div class="text-right">
+                        <p>MODULE: BIO-SCANNER</p>
+                        <p>STATUS: <span id="system-status">STANDBY</span></p>
                     </div>
+                </div>
 
-                    <!-- Step 3: Confirm and Analyze -->
-                    <div id="step-analyze" class="hidden">
-                        <p class="text-slate-300 mb-6">Image capturée. Prêt à lancer le calcul ?</p>
-                        <canvas id="photo-canvas" class="w-full aspect-video rounded-lg mb-6"></canvas>
-                        <div class="flex justify-center gap-4">
-                             <button id="retake-btn" class="bg-slate-600 text-white font-bold px-8 py-3 rounded-full hover:bg-slate-700 transition">Recommencer</button>
-                            <button id="analyze-btn" class="btn-primary text-white font-bold px-8 py-3 rounded-full">Lancer l'analyse GenoAI™</button>
+                <!-- Main HUD Container -->
+                <div class="glass-panel rounded-2xl p-1 md:p-2 relative overflow-hidden">
+                    
+                    <!-- Viewport -->
+                    <div id="scanner-viewport" class="relative bg-black rounded-xl overflow-hidden aspect-[4/3] md:aspect-video flex flex-col items-center justify-center group scan-container">
+                        
+                        <!-- Initial State -->
+                        <div id="step-start" class="text-center z-10 p-6 animate-fade-in">
+                            <div class="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
+                                <i class="fa-solid fa-camera text-3xl text-slate-400"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Initialisation du Capteur</h3>
+                            <p class="text-slate-400 mb-8 max-w-md mx-auto">Veuillez autoriser l'accès à la caméra pour permettre l'analyse photométrique de vos traits biométriques.</p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                <button onclick="startCamera()" class="px-6 py-3 bg-white text-black font-bold rounded hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-video"></i> Activer Webcam
+                                </button>
+                                <button onclick="triggerUpload()" class="px-6 py-3 bg-transparent border border-white/20 text-white font-medium rounded hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-upload"></i> Upload Image
+                                </button>
+                                <input type="file" id="file-input" class="hidden-accessible" accept="image/*" onchange="handleFileUpload(event)">
+                            </div>
+                            <p id="error-msg" class="text-red-400 mt-4 text-sm hidden font-mono"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Erreur d'accès périphérique.</p>
                         </div>
-                    </div>
 
-                    <!-- Step 4: Loading -->
-                    <div id="step-loading" class="hidden flex-col items-center justify-center min-h-[300px]">
-                        <div class="loader mb-6"></div>
-                        <h4 class="text-2xl font-bold text-white mb-2">Analyse en cours...</h4>
-                        <p id="loading-text" class="text-slate-300">Calibration des capteurs photoniques.</p>
+                        <!-- Video Feed (Active State) -->
+                        <div id="step-capture" class="absolute inset-0 hidden w-full h-full bg-black">
+                            <video id="webcam-feed" class="w-full h-full object-cover transform scale-x-[-1]" autoplay playsinline></video>
+                            
+                            <!-- HUD Overlays -->
+                            <div class="absolute inset-4 pointer-events-none z-20">
+                                <div class="hud-corner hud-tl"></div>
+                                <div class="hud-corner hud-tr"></div>
+                                <div class="hud-corner hud-bl"></div>
+                                <div class="hud-corner hud-br"></div>
+                                
+                                <!-- Face Target Reticle -->
+                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-64 border border-sky-500/30 rounded-full flex items-center justify-center opacity-50">
+                                    <div class="w-2 h-2 bg-sky-500 rounded-full"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Scanning Animation Line -->
+                            <div class="absolute top-0 left-0 w-full h-full pointer-events-none z-10 overflow-hidden">
+                                <div class="w-full absolute animate-scan-line scan-overlay"></div>
+                            </div>
+
+                            <!-- Capture Controls -->
+                            <div class="absolute bottom-8 left-0 right-0 flex justify-center z-30">
+                                <button onclick="capturePhoto()" class="w-16 h-16 rounded-full border-4 border-white/20 bg-white/10 backdrop-blur flex items-center justify-center hover:bg-white/30 hover:scale-110 transition-all duration-300 group">
+                                    <div class="w-10 h-10 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)]"></div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Loading/Analysis State -->
+                        <div id="step-loading" class="absolute inset-0 hidden bg-black z-40 flex flex-col items-center justify-center">
+                            <div class="tech-loader mb-8 relative"></div>
+                            <div class="font-mono text-center">
+                                <h3 class="text-xl font-bold text-white mb-2">ANALYSE EN COURS</h3>
+                                <p id="loading-text" class="text-sky-400 text-sm tracking-widest">INITIALISATION...</p>
+                            </div>
+                            <!-- Fake code scrolling -->
+                            <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent opacity-50 pointer-events-none"></div>
+                        </div>
+
+                        <!-- Canvas for Snapshot (Hidden visual, used for logic) -->
+                        <canvas id="photo-canvas" class="hidden"></canvas>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Results Section -->
-        <section id="results" class="hidden py-20 bg-slate-900/50">
-            <div class="container mx-auto px-6 text-center">
-                <h3 class="text-4xl font-bold text-white mb-2">Votre Rapport d'Origines Ancestrales</h3>
-                <p class="text-slate-400 mb-12">Voici la composition détaillée de votre signature génétique.</p>
-                <div class="max-w-5xl mx-auto glass-effect rounded-2xl p-8 flex flex-col lg:flex-row items-start gap-8">
-                    <!-- Map -->
-                    <div class="w-full lg:w-1/2">
-                       <svg id="world-map" viewBox="0 0 1000 500" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Simplified world map paths. Each continent/region has an ID -->
-                             <path id="region-na" fill="#334155" d="M165 59 L132 60 L123 66 L118 78 L85 83 L50 102 L20 125 L21 155 L42 165 L60 162 L87 180 L107 200 L125 210 L150 215 L170 212 L195 220 L220 230 L250 220 L255 200 L260 170 L280 140 L285 110 L260 80 L230 60 L190 55 Z"></path>
-                             <path id="region-sa" fill="#334155" d="M225 240 L200 250 L190 280 L195 320 L210 350 L240 370 L260 360 L270 330 L280 300 L260 260 L240 245 Z"></path>
-                             <path id="region-af" fill="#334155" d="M420 220 L400 240 L390 280 L410 330 L440 350 L470 330 L480 280 L460 240 L440 225 Z"></path>
-                             <path id="region-eu" fill="#334155" d="M400 120 L420 110 L450 115 L480 130 L470 160 L440 180 L410 170 L390 150 L395 130 Z"></path>
-                             <path id="region-as" fill="#334155" d="M500 80 L550 70 L650 80 L750 120 L800 180 L750 250 L680 280 L600 270 L550 220 L510 150 Z"></path>
-                             <path id="region-oc" fill="#334155" d="M800 350 L850 360 L870 390 L840 410 L810 400 L790 370 Z"></path>
-                        </svg>
-                    </div>
-                    <!-- Percentages -->
-                    <div id="results-list" class="w-full lg:w-1/2 text-left">
-                        <!-- Results will be dynamically inserted here -->
-                    </div>
+        <section id="results" class="container mx-auto px-6 hidden">
+            <div class="text-center mb-12">
+                <span class="text-sky-500 font-mono text-xs tracking-wider uppercase mb-2 block">Analyse Complétée</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Votre Empreinte Génétique</h2>
+            </div>
+
+            <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
+                
+                <!-- Map Container -->
+                <div class="glass-panel rounded-2xl p-6 min-h-[400px] flex items-center justify-center relative group">
+                    <div class="absolute top-4 left-4 font-mono text-xs text-slate-500">MAPPING GÉOGRAPHIQUE</div>
+                    <!-- World Map SVG -->
+                    <svg id="world-map" viewBox="0 0 1000 500" class="w-full h-auto drop-shadow-[0_0_15px_rgba(14,165,233,0.1)]" xmlns="http://www.w3.org/2000/svg">
+                        <path id="region-na" d="M165 59 L132 60 L123 66 L118 78 L85 83 L50 102 L20 125 L21 155 L42 165 L60 162 L87 180 L107 200 L125 210 L150 215 L170 212 L195 220 L220 230 L250 220 L255 200 L260 170 L280 140 L285 110 L260 80 L230 60 L190 55 Z"></path>
+                        <path id="region-sa" d="M225 240 L200 250 L190 280 L195 320 L210 350 L240 370 L260 360 L270 330 L280 300 L260 260 L240 245 Z"></path>
+                        <path id="region-af" d="M420 220 L400 240 L390 280 L410 330 L440 350 L470 330 L480 280 L460 240 L440 225 Z"></path>
+                        <path id="region-eu" d="M400 120 L420 110 L450 115 L480 130 L470 160 L440 180 L410 170 L390 150 L395 130 Z"></path>
+                        <path id="region-as" d="M500 80 L550 70 L650 80 L750 120 L800 180 L750 250 L680 280 L600 270 L550 220 L510 150 Z"></path>
+                        <path id="region-oc" d="M800 350 L850 360 L870 390 L840 410 L810 400 L790 370 Z"></path>
+                    </svg>
                 </div>
-                 <button id="reset-btn" class="mt-12 bg-slate-600 text-white font-bold px-8 py-3 rounded-full hover:bg-slate-700 transition">Analyser un autre profil</button>
+
+                <!-- Stats Container -->
+                <div class="flex flex-col gap-4">
+                    <div id="results-list" class="space-y-4">
+                        <!-- Results injected via JS -->
+                    </div>
+                    
+                    <button onclick="resetExperience()" class="mt-6 w-full py-4 rounded-xl border border-white/10 hover:bg-white/5 text-slate-300 font-medium transition-colors flex items-center justify-center gap-2 group">
+                        <i class="fa-solid fa-rotate-left group-hover:-rotate-90 transition-transform duration-500"></i>
+                        Nouvelle Analyse
+                    </button>
+                </div>
             </div>
         </section>
 
-        <!-- FAQ Section -->
-        <section id="faq" class="py-20">
-            <div class="container mx-auto px-6 max-w-3xl">
-                <h3 class="text-4xl font-bold text-white text-center mb-12">Questions Fréquemment Posées</h3>
-                <div class="space-y-4">
-                    <!-- FAQ Item 1 -->
-                    <details class="glass-effect rounded-lg p-6 group" open>
-                        <summary class="font-semibold text-lg cursor-pointer flex justify-between items-center text-white">
-                            Cette technologie est-elle réelle ?
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                        </summary>
-                        <p class="mt-4 text-slate-300">
-                           Oui. GenoScan est le fruit de plus d'une décennie de recherche en biophotonique et en apprentissage profond. Notre technologie, validée par des études comparatives avec les tests ADN traditionnels, identifie les schémas phénotypiques liés aux haplogroupes spécifiques pour déterminer vos origines avec une haute fiabilité.
-                        </p>
-                    </details>
-                    <!-- FAQ Item 2 -->
-                    <details class="glass-effect rounded-lg p-6 group">
-                        <summary class="font-semibold text-lg cursor-pointer flex justify-between items-center text-white">
-                            Mes données personnelles sont-elles protégées ?
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                        </summary>
-                        <p class="mt-4 text-slate-300">
-                           Votre vie privée est notre priorité absolue. L'image capturée est convertie en un vecteur de données biométriques chiffré (SHA-256) directement sur votre appareil. Ce vecteur est envoyé à nos serveurs pour analyse et est immédiatement et définitivement détruit après la génération de votre rapport. Nous ne stockons jamais votre photo.
-                        </p>
-                    </details>
-                     <!-- FAQ Item 3 -->
-                    <details class="glass-effect rounded-lg p-6 group">
-                        <summary class="font-semibold text-lg cursor-pointer flex justify-between items-center text-white">
-                            Quelle est la base scientifique de GenoScan ?
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                        </summary>
-                        <p class="mt-4 text-slate-300">
-                           GenoScan utilise une technique non invasive appelée spectroscopie de réflectance diffuse. La lumière de votre écran interagit avec les chromophores de votre peau (mélanine, hémoglobine). Notre IA analyse le signal lumineux réfléchi, capturé par la webcam, pour quantifier ces biomarqueurs. En comparant ces données à notre base de référence mondiale, l'algorithme GenoAI™ peut identifier avec précision les populations ancestrales qui composent votre héritage génétique.
-                        </p>
-                    </details>
+        <!-- Tech Explanation -->
+        <section id="technology" class="container mx-auto px-6 py-20 mt-20 border-t border-white/5">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-panel p-8 rounded-2xl glass-panel-hover">
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 text-xl mb-6">
+                        <i class="fa-solid fa-cube"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Modélisation 3D</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Capture de la topographie faciale et conversion en mesh polygonal pour ignorer les variations d'éclairage.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl glass-panel-hover">
+                    <div class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-400 text-xl mb-6">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Algorithme Déterministe</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Analyse des pixels et génération de hash unique. La même photo génère toujours la même séquence génétique.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl glass-panel-hover">
+                    <div class="w-12 h-12 bg-sky-500/10 rounded-lg flex items-center justify-center text-sky-400 text-xl mb-6">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Confidentialité Totale</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Traitement en local (Edge Computing). Aucune image n'est envoyée dans le cloud. Vos données restent vôtres.</p>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-slate-900/50 py-8">
-        <div class="container mx-auto px-6 text-center text-slate-400 text-sm">
-            <p>&copy; 2025 GenoScan. Tous droits réservés.</p>
-            <p class="mt-2">GenoScan est un service d'analyse d'ascendance informationnelle. Pour un diagnostic médical, veuillez consulter un professionnel de la santé.</p>
+    <footer class="border-t border-white/5 bg-black/50 backdrop-blur-sm py-12">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
+            <p>&copy; 2025 GenoScan Labs. Designed by Samyn-Antoy.</p>
+            <div class="flex gap-6 mt-4 md:mt-0">
+                <a href="#" class="hover:text-white transition-colors">Confidentialité</a>
+                <a href="#" class="hover:text-white transition-colors">Conditions</a>
+                <a href="#" class="hover:text-white transition-colors">Support</a>
+            </div>
         </div>
     </footer>
 
+    <!-- LOGIC -->
     <script>
+        // --- DATA & CONFIG ---
+        const ancestryData = {
+            'Scandinavie': { color: '#38bdf8', region: 'eu', code: 'SCA' },
+            'Iles Britanniques': { color: '#60a5fa', region: 'eu', code: 'GBR' },
+            'Europe de l\'Ouest': { color: '#2563eb', region: 'eu', code: 'WEU' },
+            'Ibérie & Italie': { color: '#4f46e5', region: 'eu', code: 'SWE' },
+            'Europe de l\'Est': { color: '#818cf8', region: 'eu', code: 'EEU' },
+            'Afrique de l\'Ouest': { color: '#facc15', region: 'af', code: 'WAF' },
+            'Afrique de l\'Est': { color: '#eab308', region: 'af', code: 'EAF' },
+            'Afrique du Nord': { color: '#fbbf24', region: 'af', code: 'NAF' },
+            'Asie de l\'Est': { color: '#f87171', region: 'as', code: 'EAS' },
+            'Japon & Corée': { color: '#ef4444', region: 'as', code: 'JPN' },
+            'Asie du Sud': { color: '#dc2626', region: 'as', code: 'SAS' },
+            'Moyen-Orient': { color: '#f97316', region: 'as', code: 'MEA' },
+            'Amérindien Nord': { color: '#4ade80', region: 'na', code: 'NAM' },
+            'Amérindien Sud': { color: '#22c55e', region: 'sa', code: 'SAM' },
+            'Océanie': { color: '#2dd4bf', region: 'oc', code: 'OCE' },
+        };
+
         // DOM Elements
-        const startBtn = document.getElementById('start-camera-btn');
-        const uploadBtn = document.getElementById('upload-btn');
-        const fileInput = document.getElementById('file-input');
-        const captureBtn = document.getElementById('capture-btn');
-        const retakeBtn = document.getElementById('retake-btn');
-        const analyzeBtn = document.getElementById('analyze-btn');
-        const resetBtn = document.getElementById('reset-btn');
-        
-        const video = document.getElementById('webcam-feed');
-        const canvas = document.getElementById('photo-canvas');
-        const context = canvas.getContext('2d');
+        const els = {
+            start: document.getElementById('step-start'),
+            capture: document.getElementById('step-capture'),
+            loading: document.getElementById('step-loading'),
+            results: document.getElementById('results'),
+            video: document.getElementById('webcam-feed'),
+            canvas: document.getElementById('photo-canvas'),
+            ctx: document.getElementById('photo-canvas').getContext('2d'),
+            loadingText: document.getElementById('loading-text'),
+            status: document.getElementById('system-status'),
+            sessionId: document.getElementById('session-id'),
+            resultsList: document.getElementById('results-list'),
+            map: document.getElementById('world-map'),
+            error: document.getElementById('error-msg')
+        };
 
-        const stepStart = document.getElementById('step-start');
-        const stepCapture = document.getElementById('step-capture');
-        const stepAnalyze = document.getElementById('step-analyze');
-        const stepLoading = document.getElementById('step-loading');
-        
-        const resultsSection = document.getElementById('results');
-        const resultsList = document.getElementById('results-list');
-        const worldMap = document.getElementById('world-map');
-        const cameraError = document.getElementById('camera-error');
-        const loadingText = document.getElementById('loading-text');
+        let stream = null;
+        let rng = Math.random; // Default to Math.random until seeded
 
-        let stream;
-        let currentCaptureMode = 'webcam'; // 'webcam' or 'upload'
+        // Init Session ID
+        els.sessionId.textContent = "GEN-" + Math.floor(Math.random() * 999999);
 
-        // --- Camera & Upload Logic ---
-        async function startCamera() {
-            try {
-                if (stream) {
-                    stream.getTracks().forEach(track => track.stop());
-                }
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
-                video.srcObject = stream;
-                stepStart.classList.add('hidden');
-                stepCapture.classList.remove('hidden');
-                cameraError.classList.add('hidden');
-                currentCaptureMode = 'webcam';
-            } catch (err) {
-                console.error("Error accessing webcam: ", err);
-                cameraError.textContent = "Impossible d'accéder à la webcam. Veuillez vérifier les autorisations de votre navigateur.";
-                cameraError.classList.remove('hidden');
+        // --- SEEDED RANDOM LOGIC (DETERMINISTIC) ---
+        // A simple seeded random number generator (Mulberry32)
+        function mulberry32(a) {
+            return function() {
+              var t = a += 0x6D2B79F5;
+              t = Math.imul(t ^ t >>> 15, t | 1);
+              t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+              return ((t ^ t >>> 14) >>> 0) / 4294967296;
             }
         }
 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
+        // Generate a seed based on the pixels of the image
+        function generateSeedFromImage() {
+            const imageData = els.ctx.getImageData(0, 0, els.canvas.width, els.canvas.height);
+            const data = imageData.data;
+            let hash = 0;
+            
+            // Sample pixels to build a "hash" (summing RGBA values)
+            // We step by 100 to keep it performant while still sampling the whole image
+            for (let i = 0; i < data.length; i += 100) { 
+                hash = (hash + data[i] + data[i+1] + data[i+2]) | 0;
+            }
+            console.log("Image Hash Seed:", hash);
+            return hash;
+        }
+
+        // --- CAMERA LOGIC ---
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } } });
+                els.video.srcObject = stream;
+                els.start.classList.add('hidden');
+                els.capture.classList.remove('hidden');
+                els.status.textContent = "ACQUISITION";
+                els.status.className = "text-sky-400 animate-pulse";
+            } catch (err) {
+                console.error(err);
+                els.error.classList.remove('hidden');
+            }
+        }
+
+        function triggerUpload() {
+            document.getElementById('file-input').click();
+        }
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if(file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = (event) => {
                     const img = new Image();
-                    img.onload = function() {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        context.drawImage(img, 0, 0);
-                        stepStart.classList.add('hidden');
-                        stepAnalyze.classList.remove('hidden');
-                        currentCaptureMode = 'upload';
+                    img.onload = () => {
+                        els.canvas.width = img.width;
+                        els.canvas.height = img.height;
+                        els.ctx.drawImage(img, 0, 0);
+                        analyzeProcess();
                     }
-                    img.src = e.target.result;
+                    img.src = event.target.result;
                 }
                 reader.readAsDataURL(file);
             }
         }
 
         function capturePhoto() {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            els.canvas.width = els.video.videoWidth;
+            els.canvas.height = els.video.videoHeight;
+            els.ctx.drawImage(els.video, 0, 0);
             
-            stream.getTracks().forEach(track => track.stop());
-            
-            stepCapture.classList.add('hidden');
-            stepAnalyze.classList.remove('hidden');
+            if(stream) stream.getTracks().forEach(t => t.stop());
+            analyzeProcess();
         }
 
-        function retakePhoto() {
-            stepAnalyze.classList.add('hidden');
-            if (currentCaptureMode === 'webcam') {
-                startCamera();
-            } else {
-                stepStart.classList.remove('hidden');
-            }
-        }
+        // --- ANALYSIS SEQUENCE ---
+        function analyzeProcess() {
+            // 1. Generate Seed immediately from the captured image
+            const seed = generateSeedFromImage();
+            rng = mulberry32(seed); // Initialize the seeded RNG
 
-        // --- Analysis Logic ---
-        function analyze() {
-            stepAnalyze.classList.add('hidden');
-            document.getElementById('scanner-container').classList.add('flex', 'flex-col', 'items-center', 'justify-center');
-            stepLoading.classList.remove('hidden');
-            stepLoading.classList.add('flex', 'flex-col');
-            
-            const loadingMessages = [
-                "Analyse de la signature photonique...",
-                "Décodage de la séquence bio-digitale...",
-                "Comparaison croisée avec 2.5 millions de profils génomiques...",
-                "Triangulation des haplogroupes maternels et paternels...",
-                "Calcul des correspondances régionales fines...",
-                "Génération de votre rapport certifié et exhaustif..."
+            // 2. Start UI Sequence
+            els.start.classList.add('hidden');
+            els.capture.classList.add('hidden');
+            els.loading.classList.remove('hidden');
+            els.status.textContent = "PROCESSING";
+            els.status.className = "text-purple-400";
+
+            const steps = [
+                "CALIBRATION DES CAPTEURS...",
+                "ANALYSE PIXELLIQUE DU VISAGE...",
+                "EXTRACTION DE SIGNATURE HASH...",
+                "CORRÉLATION DÉTERMINISTE...",
+                "COMPARAISON BASE DE DONNÉES...",
+                "GÉNÉRATION DU PROFIL UNIQUE..."
             ];
-            let messageIndex = 0;
-            loadingText.textContent = loadingMessages[0];
 
-
+            let i = 0;
             const interval = setInterval(() => {
-                messageIndex++;
-                if (messageIndex < loadingMessages.length) {
-                    loadingText.textContent = loadingMessages[messageIndex];
+                if(i < steps.length) {
+                    els.loadingText.textContent = steps[i];
+                    i++;
                 } else {
                     clearInterval(interval);
+                    showResults();
                 }
-            }, 1500);
-
-            setTimeout(() => {
-                document.getElementById('scanner-container').classList.remove('flex', 'flex-col', 'items-center', 'justify-center');
-                stepLoading.classList.add('hidden');
-                stepLoading.classList.remove('flex', 'flex-col');
-                displayResults();
-            }, loadingMessages.length * 1500);
+            }, 800);
         }
 
-        // --- Results Logic (Exhaustive & Randomized) ---
-        const ancestryData = {
-            'Scandinavie (Norvège, Suède, Danemark)': { color: '#60a5fa', region: 'eu' },
-            'Îles Britanniques (Angleterre, Écosse, Irlande)': { color: '#38bdf8', region: 'eu' },
-            'Europe de l\'Ouest (France, Allemagne, Benelux)': { color: '#0ea5e9', region: 'eu' },
-            'Péninsule Ibérique (Espagne, Portugal)': { color: '#2563eb', region: 'eu' },
-            'Péninsule Italienne & Grèce': { color: '#1d4ed8', region: 'eu' },
-            'Europe de l\'Est & Russie': { color: '#93c5fd', region: 'eu' },
-            'Pays Baltes': { color: '#dbeafe', region: 'eu' },
-            'Afrique de l\'Ouest (Nigéria, Ghana, Sénégal)': { color: '#facc15', region: 'af' },
-            'Afrique de l\'Est (Éthiopie, Kenya, Somalie)': { color: '#eab308', region: 'af' },
-            'Afrique Centrale (Congo, Cameroun)': { color: '#ca8a04', region: 'af' },
-            'Afrique du Nord (Maroc, Égypte, Algérie)': { color: '#fde047', region: 'af' },
-            'Afrique Australe (Afrique du Sud, Namibie)': { color: '#a16207', region: 'af' },
-            'Asie de l\'Est (Chine, Mongolie)': { color: '#f87171', region: 'as' },
-            'Japon & Corée': { color: '#ef4444', region: 'as' },
-            'Asie du Sud-Est (Vietnam, Thaïlande, Philippines)': { color: '#dc2626', region: 'as' },
-            'Asie du Sud (Inde, Pakistan, Bangladesh)': { color: '#b91c1c', region: 'as' },
-            'Asie Centrale (Kazakhstan, Ouzbékistan)': { color: '#fca5a5', region: 'as' },
-            'Sibérie': { color: '#fee2e2', region: 'as' },
-            'Moyen-Orient (Péninsule Arabique, Levant)': { color: '#c2410c', region: 'as' },
-            'Anatolie & Caucase (Turquie, Arménie)': { color: '#ea580c', region: 'as' },
-            'Amérindien – Amérique du Nord': { color: '#4ade80', region: 'na' },
-            'Amérindien – Andes (Pérou, Bolivie)': { color: '#22c55e', region: 'sa' },
-            'Amérindien – Amazonie & Caraïbes': { color: '#16a34a', region: 'sa' },
-            'Océanie (Aborigène Australien, Mélanésien)': { color: '#14b8a6', region: 'oc' },
-            'Polynésie & Micronésie': { color: '#0d9488', region: 'oc' },
-        };
-
-        function generateRandomPercentages() {
+        // --- CORE ALGORITHM: DETERMINISTIC TOP 5 ---
+        function generateResults() {
             const keys = Object.keys(ancestryData);
-            let rawValues = {};
-            let totalRawValue = 0;
-
-            // 1. Generate a random base value for every single origin
-            keys.forEach(key => {
-                const randomValue = Math.random();
-                rawValues[key] = randomValue;
-                totalRawValue += randomValue;
-            });
-
-            // 2. Normalize all values so their sum is exactly 100
-            let totalPercentage = 0;
-            keys.forEach((key, index) => {
-                const percentage = (rawValues[key] / totalRawValue) * 100;
-                
-                // On the last element, assign the remainder to prevent floating point inaccuracies
-                if (index === keys.length - 1) {
-                    ancestryData[key].percentage = 100 - totalPercentage;
-                } else {
-                    ancestryData[key].percentage = percentage;
-                    totalPercentage += percentage;
-                }
-            });
-        }
-
-
-        function displayResults() {
-            generateRandomPercentages();
-            resultsList.innerHTML = ''; // Clear previous results
-
-            // Sort by percentage descending
-            const sortedAncestry = Object.entries(ancestryData).sort(([,a],[,b]) => b.percentage - a.percentage);
             
-            // Reset map colors
-            worldMap.querySelectorAll('path').forEach(path => {
-                path.style.fill = '#334155'; // Reset color
+            // 1. Shuffle keys using SEEDED RNG (not Math.random)
+            // This ensures same seed = same list of regions
+            for (let i = keys.length - 1; i > 0; i--) {
+                const j = Math.floor(rng() * (i + 1));
+                [keys[i], keys[j]] = [keys[j], keys[i]];
+            }
+            const selectedKeys = keys.slice(0, 5); // Take Top 5
+
+            // 2. Assign weights using SEEDED RNG
+            let rawWeights = selectedKeys.map(() => Math.floor(rng() * 80) + 10);
+            const totalWeight = rawWeights.reduce((a, b) => a + b, 0);
+
+            // 3. Normalize to percentages
+            let finalResults = selectedKeys.map((key, index) => {
+                const pct = (rawWeights[index] / totalWeight) * 100;
+                return {
+                    name: key,
+                    ...ancestryData[key],
+                    percent: pct
+                };
             });
 
-            sortedAncestry.forEach(([name, data]) => {
-                if(data.percentage > 0) {
-                    const resultEl = document.createElement('div');
-                    resultEl.className = 'mb-4';
-                    resultEl.innerHTML = `
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="font-semibold text-white">${name}</span>
-                            <span class="text-sky-400 font-bold">${data.percentage.toFixed(2)}%</span>
-                        </div>
-                        <div class="w-full bg-slate-700 rounded-full h-2.5">
-                            <div class="h-2.5 rounded-full" style="width: ${data.percentage}%; background-color: ${data.color};"></div>
-                        </div>
-                    `;
-                    resultsList.appendChild(resultEl);
-
-                    // Highlight map regions with significant percentage
-                    if (data.percentage > 5) {
-                        const regionPath = worldMap.querySelector(`#region-${data.region}`);
-                        if (regionPath) {
-                            regionPath.style.fill = data.color;
-                        }
-                    }
-                }
-            });
-
-            resultsSection.classList.remove('hidden');
-            resultsSection.scrollIntoView({ behavior: 'smooth' });
+            // 4. Sort descending
+            return finalResults.sort((a, b) => b.percent - a.percent);
         }
-        
+
+        function showResults() {
+            els.loading.classList.add('hidden');
+            els.results.classList.remove('hidden');
+            els.status.textContent = "COMPLETE";
+            els.status.className = "text-green-400";
+
+            // Generate deterministic results
+            const data = generateResults();
+            els.resultsList.innerHTML = '';
+            
+            // Reset map
+            els.map.querySelectorAll('path').forEach(p => p.style.fill = '#1e293b');
+
+            data.forEach((item, index) => {
+                const isDominant = index === 0;
+                const delay = index * 100;
+
+                const mapRegion = document.getElementById(`region-${item.region}`);
+                if(mapRegion) mapRegion.style.fill = item.color;
+
+                const html = `
+                    <div class="glass-panel rounded-xl p-4 flex items-center gap-4 animate-fade-in ${isDominant ? 'border-sky-500/50 bg-sky-500/10' : ''}" style="animation-delay: ${delay}ms">
+                        <div class="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white shadow-lg" style="background: ${item.color}">
+                            ${Math.round(item.percent)}%
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-end mb-1">
+                                <h4 class="font-bold text-white text-lg">${item.name}</h4>
+                                ${isDominant ? '<span class="text-[10px] font-mono bg-sky-500 text-white px-2 py-0.5 rounded-full">DOMINANT</span>' : ''}
+                            </div>
+                            <div class="w-full bg-slate-700/50 rounded-full h-1.5 overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%; background: ${item.color}" id="bar-${index}"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                els.resultsList.insertAdjacentHTML('beforeend', html);
+
+                setTimeout(() => {
+                    document.getElementById(`bar-${index}`).style.width = `${item.percent}%`;
+                }, 100 + delay);
+            });
+
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
         function resetExperience() {
-            resultsSection.classList.add('hidden');
-            stepAnalyze.classList.add('hidden');
-            stepCapture.classList.add('hidden');
-            stepStart.classList.remove('hidden');
-            scanner.scrollIntoView({ behavior: 'smooth' });
-            fileInput.value = ''; // Reset file input
+            els.results.classList.add('hidden');
+            els.start.classList.remove('hidden');
+            els.status.textContent = "STANDBY";
+            els.status.className = "text-slate-500";
+            els.sessionId.textContent = "GEN-" + Math.floor(Math.random() * 999999);
+            document.getElementById('scanner').scrollIntoView({ behavior: 'smooth' });
         }
-
-        // Event Listeners
-        startBtn.addEventListener('click', startCamera);
-        uploadBtn.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', handleFileUpload);
-        captureBtn.addEventListener('click', capturePhoto);
-        retakeBtn.addEventListener('click', retakePhoto);
-        analyzeBtn.addEventListener('click', analyze);
-        resetBtn.addEventListener('click', resetExperience);
     </script>
 </body>
 </html>
-
